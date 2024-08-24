@@ -1,3 +1,3 @@
-import Excalidraw from './Excalidraw';
+import ExcalidrawExtension from './Excalidraw';
 
-export { Excalidraw };
+export { ExcalidrawExtension };

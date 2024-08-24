@@ -13,11 +13,13 @@
     "react-dom": "^18",
     "next": "14.2.6",
     "@radix-ui/react-slot": "^1.1.0",
+    "@tiptap/core": "^2.0.0-beta.220",
     "@tiptap/extension-collaboration": "^2.6.5",
     "@tiptap/extension-collaboration-cursor": "^2.6.5",
     "@tiptap/extension-document": "^2.6.5",
     "@tiptap/extension-paragraph": "^2.6.5",
     "@tiptap/extension-text": "^2.6.5",
+    "@tiptap/pm": "^2.0.0-beta.220",
     "@tiptap/react": "^2.6.6",
     "@tiptap/starter-kit": "^2.6.6",
     "class-variance-authority": "^0.7.0",
@@ -29,13 +31,14 @@
     "yjs": "^13.6.18"
   },
   "devDependencies": {
-    "typescript": "^5",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.6",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
-    "eslint": "^8",
-    "eslint-config-next": "14.2.6"
+    "tslib": "^2.7.0",
+    "typescript": "^5"
   }
 }

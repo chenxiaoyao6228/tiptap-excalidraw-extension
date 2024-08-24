@@ -1,5 +1,5 @@
-// rollup.config.js
-
+/* eslint-disable */
+const postcss = require('rollup-plugin-postcss');
 const autoExternal = require('rollup-plugin-auto-external');
 const sourcemaps = require('rollup-plugin-sourcemaps');
 const commonjs = require('@rollup/plugin-commonjs');
@@ -23,6 +23,13 @@ const config = {
     }
   ],
   plugins: [
+    postcss({
+      // Options for processing CSS
+      extract: false, // Extracts CSS into separate files
+      minimize: true, // Minifies the CSS
+      modules: false, // Enables CSS Modules
+      plugins: []
+    }),
     autoExternal({ packagePath: './package.json' }),
     sourcemaps(),
     babel(),

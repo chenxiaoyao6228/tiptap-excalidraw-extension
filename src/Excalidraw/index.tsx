@@ -1,10 +1,27 @@
 import { mergeAttributes, Node } from '@tiptap/react';
 import { ReactNodeViewRenderer } from '@tiptap/react';
 import ExcalidrawComponent from './ExcalidrawComponent';
+import './index.css';
 
-interface IExcalidrawOptions {}
+export interface IExcalidrawOptions {
+  data?: any;
+}
 
-const Excalidraw = Node.create<IExcalidrawOptions>({
+declare module '@tiptap/core' {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  interface Commands<ReturnType> {
+    excalidraw: {
+      /**
+       * Add an Excalidraw
+       * @example
+       * editor.chain().focus().addExcalidraw().run();
+       */
+      addExcalidraw: () => ReturnType;
+    };
+  }
+}
+
+const ExcalidrawExtension = Node.create<IExcalidrawOptions>({
   name: 'excalidraw',
   group: 'block',
   atom: true,
@@ -32,6 +49,24 @@ const Excalidraw = Node.create<IExcalidrawOptions>({
     };
   },
 
+  addCommands() {
+    return {
+      addExcalidraw:
+        () =>
+        ({ commands }) => {
+          return commands.insertContent({
+            type: 'excalidraw',
+            attrs: {
+              data: {
+                elements: [],
+                appState: {}
+              }
+            }
+          });
+        }
+    };
+  },
+
   parseHTML() {
     return [{ tag: 'excalidraw-node' }];
   },
@@ -49,4 +84,4 @@ const Excalidraw = Node.create<IExcalidrawOptions>({
   }
 });
 
-export default Excalidraw;
+export default ExcalidrawExtension;

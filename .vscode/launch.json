@@ -19,7 +19,7 @@
       "name": "Next.js: debug full stack (examples/next-demo)",
       "type": "node-terminal",
       "request": "launch",
-      "command": "npm run dev",
+      "command": "cd ../../ && npm run dev && cd examples/next-demo &&  npm run dev",
       "cwd": "${workspaceFolder}/examples/next-demo",
       "serverReadyAction": {
         "pattern": "Local: .+(https?://.+)",
