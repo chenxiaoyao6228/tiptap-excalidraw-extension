@@ -39,5 +39,6 @@
   },
   "editor.formatOnSave": true,
   "eslint.validate": ["javascript", "typescript", "reacttypescript", "reactjavascript"],
-  "conventionalCommits.scopes": ["standard"]
+  "conventionalCommits.scopes": ["standard"],
+  "cSpell.words": ["excalidraw"]
 }
