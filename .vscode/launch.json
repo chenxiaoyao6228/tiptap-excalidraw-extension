@@ -2,6 +2,18 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Next.js: debug full stack (examples/next-demo)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "cd ../../ && npm run dev && cd examples/next-demo &&  npm run dev",
+      "cwd": "${workspaceFolder}/examples/next-demo",
+      "serverReadyAction": {
+        "pattern": "Local: .+(https?://.+)",
+        "uriFormat": "%s",
+        "action": "debugWithChrome"
+      }
+    },
+    {
       "name": "Next.js: debug server-side (examples/next-demo)",
       "type": "node-terminal",
       "request": "launch",
@@ -14,18 +26,6 @@
       "request": "launch",
       "url": "http://localhost:3000",
       "webRoot": "${workspaceFolder}/examples/next-demo"
-    },
-    {
-      "name": "Next.js: debug full stack (examples/next-demo)",
-      "type": "node-terminal",
-      "request": "launch",
-      "command": "cd ../../ && npm run dev && cd examples/next-demo &&  npm run dev",
-      "cwd": "${workspaceFolder}/examples/next-demo",
-      "serverReadyAction": {
-        "pattern": "Local: .+(https?://.+)",
-        "uriFormat": "%s",
-        "action": "debugWithChrome"
-      }
     }
   ]
 }

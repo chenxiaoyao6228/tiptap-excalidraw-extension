@@ -2,7 +2,7 @@
 
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { ExcalidrawExtension } from 'tiptap-excalidraw-extension';
 
 export default function EditorComponent() {
@@ -14,7 +14,7 @@ export default function EditorComponent() {
       })
     ],
     immediatelyRender: false,
-    content: ''
+    content: '<div>tiptap excalidraw demo</div>'
   });
 
   const insertExcalidraw = useCallback(() => {
@@ -23,11 +23,11 @@ export default function EditorComponent() {
     }
   }, [editor]);
 
-  useEffect(() => {
-    setTimeout(() => {
-      insertExcalidraw();
-    }, 500);
-  }, [insertExcalidraw]);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     insertExcalidraw();
+  //   }, 500);
+  // }, [insertExcalidraw]);
 
   return (
     <div className="container w-[80%] h-screen mx-auto">
