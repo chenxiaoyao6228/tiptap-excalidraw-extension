@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Excalidraw } from '@excalidraw/excalidraw';
+import { Excalidraw, exportToCanvas } from '@excalidraw/excalidraw';
 import { NodeViewWrapper } from '@tiptap/react';
 import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types/types';
 import { getTotalVersion } from '../util';
@@ -41,8 +41,7 @@ const ExcalidrawComponent = (props: any) => {
       const sceneData = excalidrawAPIRef.current.getSceneElements();
       const appState = excalidrawAPIRef.current.getAppState();
 
-      // TODO: excalidraw does not export this function yet
-      const canvas = await excalidrawAPIRef.current.exportToCanvas({
+      const canvas = await exportToCanvas({
         elements: sceneData,
         appState: {
           ...appState,
@@ -78,17 +77,26 @@ const ExcalidrawComponent = (props: any) => {
                 </button>
               </div>
             </div>
-            <Excalidraw initialData={initialData} onChange={handleExcalidrawChange} excalidrawAPI={(api) => (excalidrawAPIRef.current = api)} />
+            <div className="tiptap-excalidraw-container">
+              <Excalidraw initialData={initialData} onChange={handleExcalidrawChange} excalidrawAPI={(api) => (excalidrawAPIRef.current = api)} />
+            </div>
           </div>
         </Modal>
       ) : (
-        <div>
-          <img src={thumbnail} alt="Thumbnail" className="tiptap-excalidraw-thumbnail" />
-          <button onClick={() => setIsEditing(true)}>Edit</button>
+        <div className="tiptap-excalidraw-static">
+          <button className="tiptap-excalidraw-edit-btn" onClick={() => setIsEditing(true)}>
+            <img src={iconEditBase64} alt="Edit" />
+          </button>
+          <div className="tiptap-excalidraw-thumbnail-wrapper">
+            <img src={thumbnail} alt="Thumbnail" className="tiptap-excalidraw-thumbnail" />
+          </div>
         </div>
       )}
     </NodeViewWrapper>
   );
 };
+
+const iconEditBase64 =
+  'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgICA8cGF0aCBkPSJNMy42IDIwLjRoMTYuOCIgc3Ryb2tlPSIjNTI1QzZGIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48L3BhdGg+CiAgICA8cGF0aCBkPSJNNS40NjcgMTMuMjd2My4zOTdIOC44bDkuNjUyLTkuNjU2LTMuNDA5LTMuNDEtOS42NTcgOS42Njh6IiBzdHJva2U9IiM1MjVDNkYiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48L3BhdGg+Cjwvc3ZnPg==';
 
 export default React.memo(ExcalidrawComponent);

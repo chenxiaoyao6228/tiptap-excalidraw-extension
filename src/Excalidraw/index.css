@@ -9,9 +9,10 @@
   overflow: hidden;
   position: fixed;
   top: 20px;
+  right: 20px;
   left: 20px;
+  bottom: 20px;
   background-color: #eeeeee;
-  /* border: 1px solid red; */
 }
 
 .tiptap-excalidraw-modal-overlay {
@@ -19,7 +20,9 @@
 }
 
 .tiptap-excalidraw-modal-content {
-  height: calc(100% - 40px);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   width: 100%;
 }
 
@@ -38,9 +41,52 @@
   margin-right: 10px;
 }
 
-.tiptap-excalidraw-thumbnail {
-  width: 100%;
+.tiptap-excalidraw-container {
   height: 100%;
+  width: 100%;
+  flex: 1;
+}
+
+/* ----------------- -----------------*/
+
+.tiptap-excalidraw-static {
+  position: relative;
+}
+
+.tiptap-excalidraw-thumbnail-wrapper {
+  position: relative;
+  display: flex;
+  -webkit-box-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  align-items: center;
+  min-width: 140px;
+  min-height: 120px;
+  background: #fff;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.tiptap-excalidraw-thumbnail {
+  height: 100%;
+  max-width: 100%;
   max-height: 400px;
-  min-width: 300px;
+  overflow: hidden;
+  cursor: zoom-in;
+  border-style: none;
+  image-rendering: -webkit-optimize-contrast;
+}
+
+.tiptap-excalidraw-edit-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  cursor: pointer;
+  z-index: 10000;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 3px 8px 0px;
+  display: none;
+}
+
+.tiptap-excalidraw-static:hover .tiptap-excalidraw-edit-btn {
+  display: block;
 }
