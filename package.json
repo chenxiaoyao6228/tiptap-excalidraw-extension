@@ -1,6 +1,6 @@
 {
   "name": "tiptap-excalidraw-extension",
-  "version": "0.0.1-beta",
+  "version": "0.0.1",
   "description": "excalidraw extension for tiptap",
   "main": "dist/index.cjs.js",
   "module": "dist/index.js",
@@ -9,11 +9,7 @@
     "prepare": "husky install",
     "clean": "rm -rf dist",
     "build": "npm run clean && rollup -c",
-    "link-tiptap": "yarn link ",
-    "link-next-demo": "cd examples/next-demo && yarn link  tiptap-excalidraw-extension",
-    "rollup-dev": "rollup -c -w",
-    "demo-dev": "cd examples/next-demo && yarn run dev",
-    "dev": "npm run clean && npm run link-tiptap && npm run link-next-demo && npm run rollup-dev & npm run demo-dev",
+    "dev": "rollup -c -w && yarn link",
     "lint": "eslint .  --resolve-plugins-relative-to .  --ext .js,.ts,.tsx --fix --cache"
   },
   "devDependencies": {

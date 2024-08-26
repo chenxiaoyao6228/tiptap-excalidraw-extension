@@ -21,4 +21,21 @@ pnpm install tiptap-excalidraw-extension
 
 ## Development
 
-This extension is during development and not ready for production yet.
+```bash
+yarn dev
+
+# open a second terminal
+cd examples/react-demo && yarn linkExtension
+```
+
+## RoadMap
+
+- [x] Basic Element support
+- [ ] Image support
+- [ ] Support Vue intergration
+- [ ] Collaboration support
+
+## Great thanks
+
+- [tiptap](https://github.com/ueberdosis/tiptap)
+- [excalidraw](https://github.com/excalidraw/excalidraw)

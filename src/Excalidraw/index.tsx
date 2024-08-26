@@ -4,7 +4,8 @@ import ExcalidrawComponent from './ExcalidrawComponent';
 import './index.css';
 
 export interface IExcalidrawOptions {
-  data?: any;
+  inlineImage?: boolean; // inline image in document
+  uploader?: (file: File) => Promise<string>; // upload image to server
 }
 
 declare module '@tiptap/core' {

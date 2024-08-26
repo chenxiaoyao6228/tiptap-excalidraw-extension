@@ -2,10 +2,20 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "React demo",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:5173",
+      "sourceMaps": true,
+      "webRoot": "${workspaceRoot}",
+      "skipFiles": ["node_modules/**", "**/node_modules/**"],
+      "cwd": "${workspaceFolder}/examples/react-demo"
+    },
+    {
       "name": "Next.js: debug full stack (examples/next-demo)",
       "type": "node-terminal",
       "request": "launch",
-      "command": "cd ../../ && npm run dev && cd examples/next-demo &&  npm run dev",
+      "command": "npm run linkExtension",
       "cwd": "${workspaceFolder}/examples/next-demo",
       "serverReadyAction": {
         "pattern": "Local: .+(https?://.+)",

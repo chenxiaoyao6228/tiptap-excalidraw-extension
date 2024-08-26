@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "linkExtension": "rm -rf node_modules/.cache &&  yarn && yarn link tiptap-excalidraw-extension  && yarn dev",
+    "unlinkExtension": "yarn unlink tiptap-excalidraw-extension && yarn install --force  && yarn dev"
   },
   "dependencies": {
     "react": "^18",

@@ -65,6 +65,7 @@
   background: #fff;
   border-radius: 4px;
   overflow: hidden;
+  border: 1px solid rgb(235, 235, 235);
 }
 
 .tiptap-excalidraw-thumbnail {

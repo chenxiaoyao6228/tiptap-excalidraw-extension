@@ -78,7 +78,14 @@ const ExcalidrawComponent = (props: any) => {
               </div>
             </div>
             <div className="tiptap-excalidraw-container">
-              <Excalidraw initialData={initialData} onChange={handleExcalidrawChange} excalidrawAPI={(api) => (excalidrawAPIRef.current = api)} />
+              <Excalidraw
+                initialData={initialData}
+                onChange={handleExcalidrawChange}
+                excalidrawAPI={(api) => (excalidrawAPIRef.current = api)}
+                UIOptions={{
+                  tools: { image: false }
+                }}
+              />
             </div>
           </div>
         </Modal>
