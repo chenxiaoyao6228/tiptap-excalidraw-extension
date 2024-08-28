@@ -1,18 +1,20 @@
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useCallback } from 'react';
-import { ExcalidrawExtension } from 'tiptap-excalidraw-extension';
+import { ExcalidrawStaticNode } from 'tiptap-excalidraw-extension';
 
 export default function App() {
   const editor = useEditor({
     extensions: [
-      ExcalidrawExtension,
+      ExcalidrawStaticNode.configure({
+        wrapperClass: 'my-excalidraw-static'
+      }),
       StarterKit.configure({
         history: false
       })
     ],
     immediatelyRender: false,
-    content: '<div>tiptap excalidraw demo</div>'
+    content: ''
   });
 
   const insertExcalidraw = useCallback(() => {

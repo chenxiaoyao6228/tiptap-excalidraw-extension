@@ -2,10 +2,9 @@ import { createRoot } from 'react-dom/client';
 import React, { useRef, useState } from 'react';
 import { Excalidraw, exportToCanvas } from '@excalidraw/excalidraw';
 import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types/types';
-import { getTotalVersion } from '../util';
+import { getTotalVersion } from './util';
 import Modal from 'react-modal';
 import './index.css';
-import { iconEditBase64 } from './constants';
 
 const ExcalidrawComponent = (props: any) => {
   const { node, updateAttributes } = props;
@@ -62,41 +61,28 @@ const ExcalidrawComponent = (props: any) => {
   };
 
   return (
-    <div>
-      {isEditing ? (
-        <Modal ariaHideApp={false} onClose={closeModal} isOpen={true} className="tiptap-excalidraw-modal" overlayClassName="tiptap-excalidraw-modal-overlay">
-          <div className="tiptap-excalidraw-modal-content">
-            <div className="tiptap-excalidraw-modal-btn-group">
-              <button className="tiptap-excalidraw-modal-btn discard" onClick={closeModal}>
-                Discard
-              </button>
-              <button className="tiptap-excalidraw-modal-btn" onClick={handleSave}>
-                Save
-              </button>
-            </div>
-            <div className="tiptap-excalidraw-container">
-              <Excalidraw
-                initialData={initialData}
-                onChange={handleExcalidrawChange}
-                excalidrawAPI={(api) => (excalidrawAPIRef.current = api)}
-                UIOptions={{
-                  tools: { image: false }
-                }}
-              />
-            </div>
-          </div>
-        </Modal>
-      ) : (
-        <div className="tiptap-excalidraw-static">
-          <button className="tiptap-excalidraw-edit-btn" onClick={() => setIsEditing(true)}>
-            <img src={iconEditBase64} alt="Edit" />
+    <Modal ariaHideApp={false} onClose={closeModal} isOpen={true} className="tiptap-excalidraw-modal" overlayClassName="tiptap-excalidraw-modal-overlay">
+      <div className="tiptap-excalidraw-modal-content">
+        <div className="tiptap-excalidraw-modal-btn-group">
+          <button className="tiptap-excalidraw-modal-btn discard" onClick={closeModal}>
+            Discard
           </button>
-          <div className="tiptap-excalidraw-thumbnail-wrapper">
-            <img src={thumbnail} alt="Thumbnail" className="tiptap-excalidraw-thumbnail" />
-          </div>
+          <button className="tiptap-excalidraw-modal-btn" onClick={handleSave}>
+            Save
+          </button>
         </div>
-      )}
-    </div>
+        <div className="tiptap-excalidraw-container">
+          <Excalidraw
+            initialData={initialData}
+            onChange={handleExcalidrawChange}
+            excalidrawAPI={(api) => (excalidrawAPIRef.current = api)}
+            UIOptions={{
+              tools: { image: false }
+            }}
+          />
+        </div>
+      </div>
+    </Modal>
   );
 };
 

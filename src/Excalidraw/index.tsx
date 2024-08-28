@@ -1,4 +1,4 @@
-import { Node } from '@tiptap/core';
+import { mergeAttributes, Node } from '@tiptap/core';
 import ExcalidrawRenderer from './ExcalidrawComponent';
 
 export interface IExcalidrawOptions {
@@ -25,56 +25,12 @@ const ExcalidrawExtension = Node.create<IExcalidrawOptions>({
   group: 'block',
   atom: true,
 
-  addAttributes() {
-    return {
-      data: {
-        default: {
-          elements: [],
-          appState: {}
-        },
-        parseHTML: (element) => {
-          const _data = element?.getAttribute('data') || '{}';
-          if (element) {
-            const res = JSON.parse(_data) || [];
-            return res;
-          }
-          return [];
-        },
-        renderHTML: (attributes) => ({
-          data: JSON.stringify(attributes.data)
-        })
-      }
-    };
-  },
-
-  addCommands() {
-    return {
-      addExcalidraw:
-        () =>
-        ({ commands }) => {
-          return commands.insertContent({
-            type: 'excalidraw',
-            attrs: {
-              data: {
-                elements: [],
-                appState: {}
-              }
-            }
-          });
-        }
-    };
-  },
-
   parseHTML() {
     return [{ tag: 'excalidraw-node' }];
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ['excalidraw-node', HTMLAttributes];
-  },
-
-  addStorage() {
-    return {};
+    return ['excalidraw-node', mergeAttributes(HTMLAttributes)];
   },
 
   addNodeView() {
@@ -82,17 +38,26 @@ const ExcalidrawExtension = Node.create<IExcalidrawOptions>({
       console.log('props', props);
       const { node, decorations, editor, extension, HTMLAttributes, getPos } = props;
       const container = document.createElement('div');
-      const config = {
-        ...props,
-        updateAttributes: (attrs: Record<string, any>) => {
-          const transaction = editor.state.tr.setNodeMarkup(getPos(), undefined, {
-            ...node.attrs,
-            ...attrs
-          });
-          editor.view.dispatch(transaction);
-        }
+
+      const updateAttributes = (attrs) => {
+        const newAttrs = {
+          ...node.attrs,
+          ...attrs
+        };
+
+        const transaction = editor.state.tr.setNodeMarkup(getPos(), undefined, newAttrs);
+        editor.view.dispatch(transaction);
+
+        // 这个?
+        container.setAttribute('data', JSON.stringify(newAttrs));
       };
-      new ExcalidrawRenderer({ container, ...config });
+
+      new ExcalidrawRenderer({
+        ...props,
+        container,
+        updateAttributes
+      });
+
       return {
         dom: container,
         update: (updatedNode) => {
