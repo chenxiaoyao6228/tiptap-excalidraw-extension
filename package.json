@@ -6,6 +6,12 @@
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "MIT",
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "package.json"
+  ],
   "scripts": {
     "prepare": "husky install",
     "clean": "rm -rf dist",
