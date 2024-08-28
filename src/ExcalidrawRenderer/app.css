@@ -1,0 +1,49 @@
+.tiptap-excalidraw-modal {
+  margin: 0;
+  padding: 0;
+  width: calc(100% - 40px);
+  height: calc(100% - 40px);
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  left: 20px;
+  bottom: 20px;
+  background-color: #eeeeee;
+}
+
+.tiptap-excalidraw-modal-overlay {
+  background-color: #121212;
+}
+
+.tiptap-excalidraw-modal-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+.tiptap-excalidraw-modal-btn-group {
+  padding: 6px 8px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.tiptap-excalidraw-modal-btn {
+  padding: 4px 12px;
+  background-color: #fff;
+  border-radius: 4px;
+}
+
+.tiptap-excalidraw-modal-btn.discard {
+  margin-right: 10px;
+}
+
+.tiptap-excalidraw-container {
+  height: 100%;
+  width: 100%;
+  flex: 1;
+}

@@ -7,9 +7,15 @@
       "request": "launch",
       "url": "http://localhost:5173",
       "sourceMaps": true,
-      "webRoot": "${workspaceRoot}",
+      "webRoot": "${workspaceFolder}/examples/react-demo",
       "skipFiles": ["node_modules/**", "**/node_modules/**"],
-      "cwd": "${workspaceFolder}/examples/react-demo"
+      "sourceMapPathOverrides": {
+        "webpack:///./*": "${webRoot}/*",
+        "webpack:///*": "*",
+        "*/dist/*": "${workspaceFolder}/dist/*",
+        "*/src/*": "${workspaceFolder}/src/*",
+        "../*": "${workspaceFolder}/*"
+      }
     },
     {
       "name": "Next.js: debug full stack (examples/next-demo)",

@@ -6,13 +6,18 @@ import { ExcalidrawExtension } from 'tiptap-excalidraw-extension';
 export default function App() {
   const editor = useEditor({
     extensions: [
-      ExcalidrawExtension,
+      ExcalidrawExtension.configure({
+        extension: {
+          // wrapperClass: 'my-excalidraw-static'
+        },
+        excalidraw: {}
+      }),
       StarterKit.configure({
         history: false
       })
     ],
     immediatelyRender: false,
-    content: '<div>tiptap excalidraw demo</div>'
+    content: '<div>You can pass wrapper class to overwrite existing styles</div>'
   });
 
   const insertExcalidraw = useCallback(() => {

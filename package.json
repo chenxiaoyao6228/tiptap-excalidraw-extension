@@ -1,10 +1,11 @@
 {
   "name": "tiptap-excalidraw-extension",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "excalidraw extension for tiptap",
   "main": "dist/index.cjs.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
+  "license": "MIT",
   "scripts": {
     "prepare": "husky install",
     "clean": "rm -rf dist",
@@ -32,26 +33,37 @@
     "npm-run-all": "^4.1.5",
     "postcss": "^8.4.41",
     "prettier": "2.8.7",
+    "react": "^17.0.2 || ^18.2.0",
+    "react-dom": "^17.0.2 || ^18.2.0",
     "rollup": "^3.17.3",
     "rollup-plugin-auto-external": "^2.0.0",
     "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-sourcemaps": "^0.6.3",
     "rollup-plugin-typescript2": "^0.34.1",
     "tslib": "^2.7.0",
-    "typescript": "^4.9.5",
-    "@tiptap/react": "^2.0.0-beta.220",
-    "react": "^17.0.0",
-    "react-dom": "^17.0.0"
+    "typescript": "^4.9.5"
   },
   "peerDependencies": {
-    "@tiptap/core": "^2.0.0-beta.220",
-    "@tiptap/pm": "^2.0.0-beta.220",
-    "@tiptap/react": "^2.0.0-beta.220",
-    "react": "^17.0.0",
-    "react-dom": "^17.0.0"
+    "@tiptap/core": "^2.0.0",
+    "react": "^17.0.2 || ^18.2.0",
+    "react-dom": "^17.0.2 || ^18.2.0"
   },
   "dependencies": {
     "@excalidraw/excalidraw": "^0.17.6",
     "react-modal": "^3.16.1"
-  }
+  },
+  "keywords": [
+    "tiptap",
+    "excalidraw",
+    "extension"
+  ],
+  "author": "YorkChan <YorkChan6228@gmail.com> (https://chenxiaoyao.cn)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chenxiaoyao6228/tiptap-excalidraw-extension"
+  },
+  "bugs": {
+    "url": "https://github.com/chenxiaoyao6228/tiptap-excalidraw-extension/issues"
+  },
+  "homepage": "https://github.com/chenxiaoyao6228/tiptap-excalidraw-extension#readme"
 }
