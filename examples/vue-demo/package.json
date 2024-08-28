@@ -10,13 +10,14 @@
     "linkExtension": "rm -rf node_modules/.cache &&  yarn && yarn link tiptap-excalidraw-extension  && yarn dev"
   },
   "dependencies": {
+    "@tiptap/core": "^2.0.0",
     "@tiptap/pm": "^2.6.6",
     "@tiptap/starter-kit": "^2.6.6",
     "@tiptap/vue-3": "^2.6.6",
-    "vue": "^3.4.37",
-    "react": "^17.0.2 || ^18.2.0",
-    "react-dom": "^17.0.2 || ^18.2.0",
-    "@tiptap/core": "^2.0.0"
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tiptap-excalidraw-extension": "0.0.2-beta",
+    "vue": "^3.4.37"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.1.2",

@@ -1,11 +1,11 @@
 # tiptap-excalidraw-extension
 
-A framework-agnostic extension for integrating Excalidraw into Tiptap editors. This extension allows users to embed and edit Excalidraw drawings directly within Tiptap-powered editors.
+An extension for integrating Excalidraw into Tiptap editors, supporting integration with various UI libraries including Vue, but requires React as a dependency.
 
 ## Features
 
 - [x] Basic Element support
-- [x] Framework Agnostic, Supports Integration with Vue and Other UI Libraries
+- [x] Supports Integration with Vue and Other UI Libraries
 - [ ] Collaboration support
 - [ ] Image support
 
@@ -15,41 +15,41 @@ A framework-agnostic extension for integrating Excalidraw into Tiptap editors. T
 
 ## Installation
 
-For React Users, you can install the extension using npm, yarn, or pnpm:
+To install the tiptap-excalidraw-extension, you can use npm, yarn, or pnpm:
 
 ```bash
 # npm
-npm install tiptap-excalidraw-extension
+npm install tiptap-excalidraw-extension react react-dom
 # yarn
-yarn add tiptap-excalidraw-extension
+yarn add tiptap-excalidraw-extension react react-dom
 # pnpm
-pnpm install tiptap-excalidraw-extension
+pnpm install tiptap-excalidraw-extension react react-dom
+
 ```
 
-**Note:** Since Excalidraw is built with React, if you are using Vue or any other UI library, you will still need to install `react` and `react-dom` as peer dependencies.
-
-```sh
-# npm
-npm install react react-dom
-# yarn
-yarn add react react-dom
-# pnpm
-pnpm install react react-dom
-```
+**🚧🚧🚧Note:** Since Excalidraw is built with React, if you are using Vue or any other UI library, you will still need to install `react` and `react-dom` as peer dependencies.
 
 ## Usage
 
-### React Example
+To integrate Excalidraw into a Tiptap editor, follow the example below:
 
 ```tsx
-import { EditorContent, useEditor } from '@tiptap/react';
+import { EditorContent, useEditor } from '@tiptap/react'; // For React users
+// import { useEditor, EditorContent } from '@tiptap/vue-3'; // For Vue users
 import StarterKit from '@tiptap/starter-kit';
 import { useCallback } from 'react';
 import { ExcalidrawExtension } from 'tiptap-excalidraw-extension';
 
 export default function App() {
   const editor = useEditor({
-    extensions: [ExcalidrawExtension, StarterKit],
+    extensions: [
+      ExcalidrawExtension.configure({
+        extension: {
+          wrapperClass: 'my-excalidraw-static' // custom class for node wrapper
+        }
+      }),
+      StarterKit
+    ],
     immediatelyRender: false,
     content: '<div>tiptap excalidraw demo</div>'
   });
@@ -72,37 +72,6 @@ export default function App() {
 }
 ```
 
-### Vue Example
-
-```vue
-<template>
-  <div class="container w-[80vw] h-screen mx-auto flex flex-col">
-    <h1 class="text-3xl text-center py-2">Tiptap Excalidraw Extension Demo</h1>
-    <button class="border-2 absolute top-0 left-0" @click="insertExcalidraw">Insert Excalidraw</button>
-    <editor-content class="rounded-lg flex-1 p-4 border border-rose-100" :editor="editor" />
-  </div>
-</template>
-
-<script setup>
-import { ref } from 'vue';
-import { useEditor, EditorContent } from '@tiptap/vue-3';
-import StarterKit from '@tiptap/starter-kit';
-import { ExcalidrawExtension } from 'tiptap-excalidraw-extension';
-
-const editor = useEditor({
-  extensions: [ExcalidrawExtension, StarterKit],
-  immediatelyRender: false,
-  content: '<div></div>'
-});
-
-const insertExcalidraw = () => {
-  if (editor.value) {
-    editor.value.chain().focus().addExcalidraw().run();
-  }
-};
-</script>
-```
-
 ## Development
 
 ```bash
@@ -111,16 +80,14 @@ yarn dev
 cd examples/react-demo && yarn linkExtension
 ```
 
-## Support & Feedback
-
-If you find this project useful, a star on [GitHub](https://github.com/chenxiaoyao6228/tiptap-excalidraw-extension) would be greatly appreciated. Thank you!
-
 ## Acknowledgements
 
 This project wouldn't be possible without the fantastic work of the following projects:
 
 - [Tiptap](https://github.com/ueberdosis/tiptap)
 - [Excalidraw](https://github.com/excalidraw/excalidraw)
+
+And if you find this project useful, a star on [GitHub](https://github.com/chenxiaoyao6228/tiptap-excalidraw-extension) would be greatly appreciated. Thank you!
 
 ## License
 
