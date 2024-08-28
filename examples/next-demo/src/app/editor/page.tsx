@@ -14,7 +14,7 @@ export default function EditorComponent() {
       })
     ],
     immediatelyRender: false,
-    content: '<div>tiptap excalidraw demo</div>'
+    content: '<div></div>'
   });
 
   const insertExcalidraw = useCallback(() => {

@@ -13,31 +13,32 @@ const config = {
       file: 'dist/index.cjs.js',
       format: 'cjs',
       exports: 'named',
-      sourcemap: true
+      // sourcemap: true // FIXME:
+      sourcemap: 'inline'
     },
     {
       file: 'dist/index.js',
       format: 'esm',
       exports: 'named',
-      sourcemap: true
+      // sourcemap: true
+      sourcemap: 'inline'
     }
   ],
   plugins: [
-    postcss({
-      // Options for processing CSS
-      extract: false, // Extracts CSS into separate files
-      minimize: true, // Minifies the CSS
-      modules: false, // Enables CSS Modules
-      plugins: []
-    }),
-    autoExternal({ packagePath: './package.json' }),
-    sourcemaps(),
-    babel(),
-    commonjs(),
     typescript({
       tsconfig: './tsconfig.json',
       exclude: ['**/examples/**']
-    })
+    }),
+    autoExternal({ packagePath: './package.json' }),
+    postcss({
+      extract: false,
+      minimize: true,
+      modules: false,
+      plugins: []
+    }),
+    babel(),
+    commonjs(),
+    sourcemaps()
   ]
 };
 

@@ -1,7 +1,5 @@
-import { mergeAttributes, Node } from '@tiptap/react';
-import { ReactNodeViewRenderer } from '@tiptap/react';
-import ExcalidrawComponent from './ExcalidrawComponent';
-import './index.css';
+import { Node } from '@tiptap/core';
+import ExcalidrawRenderer from './ExcalidrawComponent';
 
 export interface IExcalidrawOptions {
   inlineImage?: boolean; // inline image in document
@@ -36,7 +34,6 @@ const ExcalidrawExtension = Node.create<IExcalidrawOptions>({
         },
         parseHTML: (element) => {
           const _data = element?.getAttribute('data') || '{}';
-
           if (element) {
             const res = JSON.parse(_data) || [];
             return res;
@@ -73,7 +70,7 @@ const ExcalidrawExtension = Node.create<IExcalidrawOptions>({
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ['excalidraw-node', mergeAttributes(HTMLAttributes)];
+    return ['excalidraw-node', HTMLAttributes];
   },
 
   addStorage() {
@@ -81,7 +78,34 @@ const ExcalidrawExtension = Node.create<IExcalidrawOptions>({
   },
 
   addNodeView() {
-    return ReactNodeViewRenderer(ExcalidrawComponent);
+    return (props: any) => {
+      console.log('props', props);
+      const { node, decorations, editor, extension, HTMLAttributes, getPos } = props;
+      const container = document.createElement('div');
+      const config = {
+        ...props,
+        updateAttributes: (attrs: Record<string, any>) => {
+          const transaction = editor.state.tr.setNodeMarkup(getPos(), undefined, {
+            ...node.attrs,
+            ...attrs
+          });
+          editor.view.dispatch(transaction);
+        }
+      };
+      new ExcalidrawRenderer({ container, ...config });
+      return {
+        dom: container,
+        update: (updatedNode) => {
+          // handle updates if necessary
+          return true;
+        }
+      };
+    };
+  },
+
+  // events: https://tiptap.dev/docs/editor/api/events
+  onCreate() {
+    console.log('tiptap excalidraw created!');
   }
 });
 
