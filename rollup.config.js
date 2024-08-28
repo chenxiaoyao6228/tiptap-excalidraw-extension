@@ -6,6 +6,10 @@ const commonjs = require('@rollup/plugin-commonjs');
 const babel = require('@rollup/plugin-babel');
 const typescript = require('rollup-plugin-typescript2');
 
+const isProduction = process.env.NODE_ENV === 'production';
+
+console.log('isProduction------------', isProduction);
+
 const config = {
   input: 'src/index.tsx',
   output: [
@@ -13,15 +17,13 @@ const config = {
       file: 'dist/index.cjs.js',
       format: 'cjs',
       exports: 'named',
-      // sourcemap: true // FIXME:
-      sourcemap: 'inline'
+      sourcemap: !isProduction ? 'inline' : false
     },
     {
       file: 'dist/index.js',
       format: 'esm',
       exports: 'named',
-      // sourcemap: true
-      sourcemap: 'inline'
+      sourcemap: !isProduction ? 'inline' : false
     }
   ],
   plugins: [
@@ -38,8 +40,8 @@ const config = {
     }),
     babel(),
     commonjs(),
-    sourcemaps()
-  ]
+    !isProduction && sourcemaps() // Only include sourcemaps plugin in non-production builds
+  ].filter(Boolean) // Filter out falsy values like `false`
 };
 
 module.exports = config;
