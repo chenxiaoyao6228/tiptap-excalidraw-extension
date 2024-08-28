@@ -1,6 +1,7 @@
 import React, { createRef } from 'react';
 import ExcalidrawApp from './App';
 import { createRoot } from 'react-dom/client';
+import ReactDOM from 'react-dom';
 import { EventEmitter } from './eventEmitter';
 
 interface IEvent {
@@ -29,8 +30,16 @@ class ExcalidrawRenderer {
     document.body.appendChild(modalRoot);
     this.modalRoot = modalRoot;
 
-    // Pass the ref to ExcalidrawApp
-    createRoot(modalRoot).render(<ExcalidrawApp ref={this.excalidrawAppRef} {...config} onSave={(thumbnailUrl) => this.handleSaveEvent(thumbnailUrl)} />);
+    // Check if React 18's createRoot is available
+    if (typeof createRoot === 'function') {
+      this.root = createRoot(modalRoot);
+      this.root.render(<ExcalidrawApp ref={this.excalidrawAppRef} {...config} onSave={(thumbnailUrl) => this.handleSaveEvent(thumbnailUrl)} />);
+    } else {
+      this.root = {
+        unmount: () => ReactDOM.unmountComponentAtNode(modalRoot)
+      };
+      ReactDOM.render(<ExcalidrawApp ref={this.excalidrawAppRef} {...config} onSave={(thumbnailUrl) => this.handleSaveEvent(thumbnailUrl)} />, modalRoot);
+    }
   }
 
   handleSaveEvent({ elements, appState, imageUrl }) {
