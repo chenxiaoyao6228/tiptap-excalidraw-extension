@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "linkExtension": "rm -rf node_modules/.cache &&  yarn && yarn link tiptap-excalidraw-extension  && yarn dev --force"
+    "linkExtension": "rm -rf node_modules/.cache &&  yarn && yarn link tiptap-excalidraw-extension  && yarn dev --force",
+    "unlinkExtension": "yarn unlink tiptap-excalidraw-extension && yarn install --force  && yarn dev"
   },
   "dependencies": {
     "@radix-ui/themes": "^2.0.1",

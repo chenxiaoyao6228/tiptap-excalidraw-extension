@@ -1,20 +1,23 @@
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useCallback } from 'react';
-import { ExcalidrawStaticNode } from 'tiptap-excalidraw-extension';
+import { ExcalidrawExtension } from 'tiptap-excalidraw-extension';
 
 export default function App() {
   const editor = useEditor({
     extensions: [
-      ExcalidrawStaticNode.configure({
-        wrapperClass: 'my-excalidraw-static'
+      ExcalidrawExtension.configure({
+        extension: {
+          // wrapperClass: 'my-excalidraw-static'
+        },
+        excalidraw: {}
       }),
       StarterKit.configure({
         history: false
       })
     ],
     immediatelyRender: false,
-    content: ''
+    content: '<div>You can pass wrapper class to overwrite existing styles</div>'
   });
 
   const insertExcalidraw = useCallback(() => {
