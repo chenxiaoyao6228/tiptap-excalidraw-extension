@@ -8,7 +8,7 @@ export default function App() {
     extensions: [
       ExcalidrawExtension.configure({
         extension: {
-          // wrapperClass: 'my-excalidraw-static'
+          wrapperClass: 'my-excalidraw-static'
         },
         excalidraw: {}
       }),
@@ -17,7 +17,29 @@ export default function App() {
       })
     ],
     immediatelyRender: false,
-    content: '<div>You can pass wrapper class to overwrite existing styles</div>'
+    content: {
+      type: 'doc',
+      content: [
+        {
+          type: 'paragraph',
+          content: [
+            {
+              type: 'text',
+              text: "click the 'insert excalidraw icon to insert"
+            }
+          ]
+        },
+        {
+          type: 'paragraph',
+          content: [
+            {
+              type: 'text',
+              text: 'You can pass wrapper class to overwrite existing styles'
+            }
+          ]
+        }
+      ]
+    }
   });
 
   const insertExcalidraw = useCallback(() => {

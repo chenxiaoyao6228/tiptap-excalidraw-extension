@@ -76,16 +76,12 @@ const ExcalidrawApp = (props: IExcalidrawAppProps, ref: ForwardedRef<IExcalidraw
         files: excalidrawAPIRef.current.getFiles()
       });
 
-      canvas.toBlob((blob) => {
-        if (blob) {
-          const imageUrl = URL.createObjectURL(blob);
+      const imageUrl = canvas.toDataURL();
 
-          onSave({
-            elements,
-            appState,
-            imageUrl
-          });
-        }
+      onSave({
+        elements,
+        appState,
+        imageUrl
       });
     }
 

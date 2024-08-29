@@ -72,6 +72,19 @@ export default function App() {
 }
 ```
 
+## Styling
+
+You can overwrite the existing class
+
+```scss
+.my-excalidraw-static,
+.tiptap-excalidraw-static {
+  .tiptap-excalidraw-thumbnail-wrapper {
+    // write your own style
+  }
+}
+```
+
 ## Development
 
 ```bash

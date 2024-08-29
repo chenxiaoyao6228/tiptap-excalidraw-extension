@@ -1,6 +1,6 @@
 {
   "name": "tiptap-excalidraw-extension",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "excalidraw extension for tiptap",
   "main": "dist/index.cjs.js",
   "module": "dist/index.js",
