@@ -2,7 +2,32 @@ import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
+import Collaboration from '@tiptap/extension-collaboration';
+import CollaborationCursor from '@tiptap/extension-collaboration-cursor';
 import { ExcalidrawExtension } from 'tiptap-excalidraw-extension';
+import { WebsocketProvider } from 'y-websocket';
+import * as Y from 'yjs';
+
+function getRandomColor() {
+  const randomColors = Array.from({ length: 10 }, () => '#' + Math.floor(Math.random() * 16777215).toString(16));
+  const randomIndex = Math.floor(Math.random() * randomColors.length);
+  return randomColors[randomIndex];
+}
+
+function getRandomUser() {
+  const randomId = 'user-' + Math.floor(Math.random() * 1000); // Generates a random user ID
+  const randomName = 'User ' + Math.floor(Math.random() * 1000); // Generates a random user name
+  const randomColor = getRandomColor(); // Picks a random color
+
+  return {
+    id: randomId,
+    name: randomName,
+    color: randomColor
+  };
+}
+
+const ydoc = new Y.Doc();
+const provider = new WebsocketProvider('ws://localhost:1234', 'tiptap-excalidraw-example', ydoc);
 
 const DOC_LOCAL_STORATE_KEY = 'tiptapDocDataUrl';
 
@@ -61,11 +86,22 @@ export default function App() {
           // wrapperClass: 'my-excalidraw-static',
           inline: false,
           uploadFn,
-          downloadFn
+          downloadFn,
+          provider,
+          ydoc
         },
         excalidraw: {}
       }),
-      StarterKit
+      Collaboration.configure({
+        document: ydoc
+      }),
+      CollaborationCursor.configure({
+        provider: provider,
+        user: getRandomUser()
+      }),
+      StarterKit.configure({
+        history: false
+      })
     ],
     autofocus: true
   });

@@ -22,5 +22,7 @@ export interface IExcalidrawOptions {
     inline: boolean; // inline excalidraw data, this option might bloat your document
     uploadFn?: (file: Blob | object, ext: FileExt) => Promise<{ dataUrl: string }>; // if inline is set to false, you have to provide this function
     downloadFn?: (url: string) => Promise<any>; // function to download remote data
+    provider?: any;
+    ydoc?: any;
   };
 }
