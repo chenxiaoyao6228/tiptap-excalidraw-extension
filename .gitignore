@@ -4,3 +4,4 @@ dist
 
 # file uploads
 examples/file-server/uploads
+local-publish.sh

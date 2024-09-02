@@ -59,7 +59,7 @@ export default function App() {
       ExcalidrawExtension.configure({
         extension: {
           // wrapperClass: 'my-excalidraw-static',
-          inline: true,
+          inline: false,
           uploadFn,
           downloadFn
         },
