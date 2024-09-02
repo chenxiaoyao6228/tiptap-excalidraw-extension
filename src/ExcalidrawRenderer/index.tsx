@@ -3,14 +3,10 @@ import ExcalidrawApp from './App';
 import { createRoot } from 'react-dom/client';
 import ReactDOM from 'react-dom';
 import { EventEmitter } from './eventEmitter';
+import { IExcalidrawNodeAttrs, IExcalidrawOptions } from './type';
 
 interface IEvent {
-  save: {
-    id: string;
-    imageUrl: string;
-    elements: any;
-    appState: any;
-  };
+  save: IExcalidrawNodeAttrs;
 }
 
 class ExcalidrawRenderer {
@@ -20,7 +16,7 @@ class ExcalidrawRenderer {
   currentNodeId?: string; // The ID of the currently edited NodeView
   emitter = new EventEmitter<IEvent>();
 
-  constructor(config: any) {
+  constructor(config: IExcalidrawOptions) {
     this.excalidrawAppRef = createRef();
     this.mountElements(config);
   }
@@ -33,7 +29,7 @@ class ExcalidrawRenderer {
     // Check if React 18's createRoot is available
     if (typeof createRoot === 'function') {
       this.root = createRoot(modalRoot);
-      this.root.render(<ExcalidrawApp ref={this.excalidrawAppRef} {...config} onSave={(thumbnailUrl) => this.handleSaveEvent(thumbnailUrl)} />);
+      this.root.render(<ExcalidrawApp ref={this.excalidrawAppRef} config={config} onSave={(thumbnailUrl) => this.handleSaveEvent(thumbnailUrl)} />);
     } else {
       this.root = {
         unmount: () => ReactDOM.unmountComponentAtNode(modalRoot)
@@ -42,12 +38,11 @@ class ExcalidrawRenderer {
     }
   }
 
-  handleSaveEvent({ elements, appState, imageUrl }) {
+  handleSaveEvent({ data, remoteDataUrl }) {
     this.emitter.emit('save', {
       id: this.currentNodeId,
-      elements,
-      appState,
-      imageUrl
+      data,
+      remoteDataUrl
     });
   }
 

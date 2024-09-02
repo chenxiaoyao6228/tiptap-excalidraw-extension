@@ -1,24 +1,10 @@
-import { Node } from '@tiptap/core';
+import { mergeAttributes, Node } from '@tiptap/core';
 import './index.css';
 import ExcalidrawRenderer from './ExcalidrawRenderer';
 import { uuid } from './ExcalidrawRenderer/util';
+import { IExcalidrawNodeAttrs } from './ExcalidrawRenderer/type';
 
-export interface IExcalidrawOptions {
-  // Static properties for Excalidraw UI
-  excalidraw: Record<string, any>;
-  // Props for extension
-  extension: {
-    wrapperClass: string;
-  };
-}
-
-// Define the attributes for the Excalidraw node
-interface IExcalidrawNodeAttrs {
-  id: string | null;
-  elements: Array<any>;
-  appState: Record<string, any>;
-  imageUrl: string;
-}
+const localDataMap = new Map();
 
 // Update the TypeScript module with custom commands
 declare module '@tiptap/core' {
@@ -42,17 +28,35 @@ export const ExcalidrawExtension = Node.create({
 
   atom: true,
 
+  draggable: true,
+
   addOptions() {
-    return {};
+    return {
+      inline: false,
+      wrapperClass: '',
+      uploadFn: null,
+      downloadFn: null
+    };
   },
 
   addAttributes(): IExcalidrawNodeAttrs {
-    return {
-      id: null,
-      elements: [],
-      appState: {},
-      imageUrl: ''
-    };
+    return this.options.extension.inline
+      ? {
+          id: null,
+          data: {
+            elements: [],
+            appState: {},
+            fileIds: [],
+            thumbnailUrl: ''
+          },
+          // FIXME: kind of like forceUpdate
+          version: 1
+        }
+      : {
+          id: null,
+          remoteDataUrl: '',
+          version: 1
+        };
   },
 
   parseHTML() {
@@ -64,66 +68,124 @@ export const ExcalidrawExtension = Node.create({
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ['div', { 'data-type': 'excalidraw' }, ['img', { src: HTMLAttributes.imageUrl }]];
+    return ['div', mergeAttributes(HTMLAttributes, { 'data-type': 'excalidraw' }), 0];
   },
 
   addNodeView() {
     return ({ node, getPos, editor }) => {
-      const container = createDom(iconEditBase64, node.attrs.imageUrl, this.options.extension.wrapperClass);
+      const container = createDom(this.options.extension.wrapperClass);
+      const thumbnailWrapperDiv = container.querySelector('.tiptap-excalidraw-thumbnail-wrapper');
+
+      const updateNodeAttrs = (attrs) => {
+        if (typeof getPos === 'function') {
+          const position = getPos();
+          const transaction = editor.state.tr.setNodeMarkup(position, undefined, attrs);
+          editor.view.dispatch(transaction);
+        }
+      };
+
+      // remote fetch
+      if (node.attrs.remoteDataUrl && !localDataMap.get(node.attrs.id)) {
+        this.options.extension
+          .downloadFn(node.attrs.remoteDataUrl)
+          .then((res) => {
+            //  inline: false，将 data 存储到 localDataWeakMap 中，不存储到 attrs
+            localDataMap.set(node.attrs.id, res.data);
+            updateNodeAttrs({
+              ...node.attrs,
+              version: node.attrs.version + 1
+            });
+          })
+          .catch((error) => {
+            console.error('Failed to fetch remote data:', error);
+          });
+      } else {
+        // 如果已有 data，且 inline 为 false，则从 localDataWeakMap 中获取
+        const dataToRender = this.options.extension.inline ? node.attrs.data : localDataMap.get(node.attrs.id);
+        renderThumbnail(dataToRender);
+      }
+
+      // handle save event
+      const callback = (params: { id: string; data: { imageUrl: string; elements: any[]; appState: Record<string, any> }; remoteDataUrl: string }) => {
+        const { id, data, remoteDataUrl } = params;
+        if (id === node.attrs.id) {
+          if (this.options.extension.inline) {
+            const updatedAttrs = {
+              ...node.attrs,
+              data
+            };
+            updateNodeAttrs(updatedAttrs);
+          } else {
+            localDataMap.set(node.attrs.id, data);
+            const updatedAttrs = {
+              ...node.attrs,
+              remoteDataUrl
+            };
+            updateNodeAttrs(updatedAttrs);
+          }
+        }
+      };
+
+      const renderer = this.editor.storage.excalidrawRenderer;
+      renderer && renderer.emitter.on('save', callback);
+
+      // edit button event
       const editButton = container.querySelector('.tiptap-excalidraw-edit-btn') as HTMLDivElement;
 
-      editButton.addEventListener('click', () => {
+      const editHandler = () => {
         if (typeof getPos === 'function') {
           const position = getPos();
           const latestNode = editor.state.doc.nodeAt(position);
 
           if (latestNode) {
+            const dataToEdit = this.options.extension.inline ? latestNode.attrs.data : localDataMap.get(latestNode.attrs.id);
+
             this.editor.storage.excalidrawRenderer.openModal({
               id: latestNode.attrs.id,
-              elements: latestNode.attrs.elements,
-              appState: latestNode.attrs.appState
+              elements: dataToEdit.elements,
+              appState: dataToEdit.appState
             });
-          }
-        }
-      });
-
-      const renderer = this.editor.storage.excalidrawRenderer;
-
-      // Event listener for save event
-      const callback = (data: { id: string; imageUrl: string; elements: any[]; appState: Record<string, any> }) => {
-        const { id, imageUrl, elements, appState } = data;
-        if (id === node.attrs.id) {
-          // Only update the corresponding node
-          if (typeof getPos === 'function') {
-            const position = getPos();
-            const transaction = editor.state.tr.setNodeMarkup(position, undefined, {
-              ...node.attrs,
-              imageUrl,
-              elements,
-              appState
-            });
-            editor.view.dispatch(transaction);
-            // console.log('editor.getJSON()', editor.getJSON());
           }
         }
       };
 
-      renderer && renderer.emitter.on('save', callback);
+      editButton.addEventListener('click', editHandler);
+      function renderThumbnail(data) {
+        if (thumbnailWrapperDiv && data && data.thumbnailUrl) {
+          const imgElement = thumbnailWrapperDiv.querySelector('.tiptap-excalidraw-thumbnail') as HTMLImageElement;
+          if (imgElement) {
+            imgElement.src = data.thumbnailUrl;
+          }
+        }
+      }
 
       return {
         dom: container,
         contentDOM: container.firstChild,
         update: (updatedNode) => {
-          if (updatedNode.attrs.imageUrl !== node.attrs.imageUrl) {
+          if (updatedNode.attrs.version !== node.attrs.version) {
             const imgElement = container.querySelector('.tiptap-excalidraw-thumbnail') as HTMLImageElement;
             if (imgElement) {
-              imgElement.src = updatedNode.attrs.imageUrl; // Update img element src
+              const nodeData = localDataMap.get(updatedNode.attrs.id);
+              if (nodeData) {
+                imgElement.src = nodeData.thumbnailUrl; // Update img element src
+              }
             }
           }
-          return true;
+          // for inline
+          if (this.options.extension.inline) {
+            if (updatedNode.attrs.data && updatedNode.attrs.data.thumbnailUrl !== node.attrs.data.thumbnailUrl) {
+              const imgElement = container.querySelector('.tiptap-excalidraw-thumbnail') as HTMLImageElement;
+              if (imgElement) {
+                imgElement.src = updatedNode.attrs.data.thumbnailUrl;
+              }
+            }
+          }
+          return false;
         },
         destroy: () => {
-          renderer && renderer.emitter.off('save', callback); // Remove event listener
+          editButton && editButton.removeEventListener('click', editHandler);
+          renderer && renderer.emitter.off('save', callback); // remove event listener
         }
       };
     };
@@ -136,23 +198,30 @@ export const ExcalidrawExtension = Node.create({
         ({ commands }) => {
           // Insert an empty static node
           const id = uuid();
+
+          const attrs = this.options.extension.inline
+            ? {
+                id,
+                data: {
+                  elements: [],
+                  appState: {},
+                  fileIds: [],
+                  thumbnailUrl: ''
+                }
+              }
+            : {
+                id,
+                remoteDataUrl: '' // 为 inline: false 默认提供 remoteDataUrl
+              };
+
           commands.insertContent({
             type: this.name,
-            attrs: {
-              id,
-              elements: [],
-              appState: {},
-              imageUrl: ''
-            }
+            attrs
           });
 
           // Open modal to edit
           setTimeout(() => {
-            this.editor.storage.excalidrawRenderer.openModal({
-              id,
-              elements: [],
-              appState: {}
-            });
+            this.editor.storage.excalidrawRenderer.openModal(attrs);
           });
 
           return true;
@@ -160,25 +229,26 @@ export const ExcalidrawExtension = Node.create({
     };
   },
 
-  // Lifecycle hook: called before the editor is created
   onBeforeCreate() {
-    this.editor.storage.excalidrawRenderer = new ExcalidrawRenderer(this.options.excalidraw);
+    this.editor.storage.excalidrawRenderer = new ExcalidrawRenderer(this.options);
     console.log('tiptap excalidraw created!');
   },
 
-  // Lifecycle hook: called when the editor is destroyed
   onDestroy() {
-    // Remove renderer instance on destruction
     const renderer = this.editor.storage.excalidrawRenderer;
     if (renderer) {
       renderer.unmountElement();
       this.editor.storage.excalidrawRenderer = null;
     }
+    console.log('tiptap excalidraw destroyed!');
   }
 });
 
 // Utility function to create the DOM structure for the NodeView
-function createDom(iconEditBase64: string, imageUrl: string, wrapperClass: string): HTMLDivElement {
+function createDom(wrapperClass: string): HTMLDivElement {
+  const iconEditBase64 =
+    'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgICA8cGF0aCBkPSJNMy42IDIwLjRoMTYuOCIgc3Ryb2tlPSIjNTI1QzZGIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48L3BhdGg+CiAgICA8cGF0aCBkPSJNNS40NjcgMTMuMjd2My4zOTdIOC44bDkuNjUyLTkuNjU2LTMuNDA5LTMuNDEtOS42NTcgOS42Njh6IiBzdHJva2U9IiM1MjVDNkYiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48L3BhdGg+Cjwvc3ZnPg==';
+
   const container = document.createElement('div');
   container.className = `tiptap-excalidraw-static ${wrapperClass}`;
 
@@ -197,7 +267,7 @@ function createDom(iconEditBase64: string, imageUrl: string, wrapperClass: strin
   thumbnailWrapperDiv.className = 'tiptap-excalidraw-thumbnail-wrapper';
 
   const thumbnailImg = document.createElement('img');
-  thumbnailImg.src = imageUrl || '';
+  thumbnailImg.src = '';
   thumbnailImg.alt = 'Thumbnail';
   thumbnailImg.className = 'tiptap-excalidraw-thumbnail';
 
@@ -210,6 +280,3 @@ function createDom(iconEditBase64: string, imageUrl: string, wrapperClass: strin
 
   return container;
 }
-
-const iconEditBase64 =
-  'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgICA8cGF0aCBkPSJNMy42IDIwLjRoMTYuOCIgc3Ryb2tlPSIjNTI1QzZGIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48L3BhdGg+CiAgICA8cGF0aCBkPSJNNS40NjcgMTMuMjd2My4zOTdIOC44bDkuNjUyLTkuNjU2LTMuNDA5LTMuNDEtOS42NTcgOS42Njh6IiBzdHJva2U9IiM1MjVDNkYiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48L3BhdGg+Cjwvc3ZnPg==';

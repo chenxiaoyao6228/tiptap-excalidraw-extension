@@ -14,5 +14,14 @@ export default defineConfig({
   },
   define: {
     'process.env': {}
+  },
+  server: {
+    proxy: {
+      '/upload-json': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/upload-json/, '/upload-json')
+      }
+    }
   }
 });
